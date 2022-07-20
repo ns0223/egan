@@ -21,7 +21,7 @@ class RDB(nn.Module):
 
 
     def make_conv(self, i):
-        conv = nn.Conv2d(self.channels + self.growths * i, self.growths, (3, 3), (1, 1), (1, 1))
+        conv = Involution2d(self.channels + self.growths * i, self.growths, (3, 3), (1, 1), (1, 1))
         return conv
 
     def forward(self, x):
@@ -65,11 +65,11 @@ class ResRDB(nn.Module):
 def get_conv(in_channel, out_channel, lrelu=False):
     if lrelu:
         layer = nn.Sequential(
-            nn.Conv2d(in_channel, out_channel, (3,3), (1,1), (1,1)),
+            Involution2d(in_channel, out_channel, (3,3), (1,1), (1,1)),
             nn.LeakyReLU(0.2, True)
         )
     else:
-        layer = nn.Conv2d(in_channel, out_channel, (3,3), (1,1), (1,1))
+        layer = Involution2d(in_channel, out_channel, (3,3), (1,1), (1,1))
     
     return layer
 
@@ -109,7 +109,7 @@ class Discriminator(nn.Module):
         super(Discriminator, self).__init__()
 
         channels = [64, 64, 128, 128, 256, 256, 512, 512, 512, 512]
-        layers = [nn.Conv2d(3, 64, (3, 3), (1, 1), (1, 1), bias=True),
+        layers = [Involution2d(3, 64, (3, 3), (1, 1), (1, 1), bias=True),
                   nn.LeakyReLU(0.2, True)]
         
         for i in range(1,len(channels)):
@@ -125,7 +125,7 @@ class Discriminator(nn.Module):
     def make_layer(self, in_channel, out_channel, idx):
         kernel = [(3,3),(4,4)]
         pads = [(1,1),(2,2)]
-        layer = [nn.Conv2d(in_channel, out_channel, kernel[idx%2], pads[idx%2], (1,1), bias=False),
+        layer = [Involution2d(in_channel, out_channel, kernel[idx%2], pads[idx%2], (1,1), bias=False),
                  nn.BatchNorm2d(out_channel),
                  nn.LeakyReLU(0.2, True)]
         return layer
